@@ -30,7 +30,6 @@ public class DevicesController : ControllerBase
             .ToListAsync();
     }
 
-   
     // Gets a specific device by ID.   
     [HttpGet("{id}")]
     public async Task<ActionResult<Device>> GetDevice(int id)
@@ -44,7 +43,6 @@ public class DevicesController : ControllerBase
         return device;
     }
 
- 
     // Adds a new device to a house.
     [HttpPost]
     public async Task<ActionResult<Device>> AddDevice(Device device)
@@ -52,7 +50,8 @@ public class DevicesController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var house = await _context.Houses.FindAsync(device.HouseId);
 
-        if (house == null || house.UserId != userId) return Unauthorized();
+        if (house == null || house.UserId != userId)
+            return Unauthorized();
 
         _context.Devices.Add(device);
         await _context.SaveChangesAsync();
@@ -60,7 +59,6 @@ public class DevicesController : ControllerBase
         return CreatedAtAction(nameof(GetDevice), new { id = device.DeviceId }, device);
     }
 
- 
     // Updates an existing device.    
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDevice(int id, UpdateDeviceDto deviceUpdate)
@@ -80,8 +78,7 @@ public class DevicesController : ControllerBase
 
         return NoContent();
     }
- 
-
+    
     // Deletes a device. 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDevice(int id)
