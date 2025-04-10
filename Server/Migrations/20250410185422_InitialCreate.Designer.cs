@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Date;
 
@@ -11,9 +12,11 @@ using Server.Date;
 namespace Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410185422_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,13 +196,11 @@ namespace Server.Migrations
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeviceType")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("HouseId")
                         .HasColumnType("uniqueidentifier");
@@ -218,88 +219,6 @@ namespace Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Devices");
-
-                    b.HasData(
-                        new
-                        {
-                            DeviceId = new Guid("f0e831cf-1223-4344-a8ff-2505a905c2b7"),
-                            DeviceName = "Thermostat",
-                            DeviceType = "Temperature",
-                            HouseId = new Guid("d3b8a8f1-4c3b-4b8a-9c3b-4b8a9c3b4b8a"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("d017b91b-f958-46ba-be9b-c95a3769e217"),
-                            DeviceName = "Security Camera",
-                            DeviceType = "Camera",
-                            HouseId = new Guid("e4c9b9f2-5d4c-5c9b-8d4c-5c9b8d4c5c9b"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("dd7c82c9-8b51-45a3-b470-d48a24096f34"),
-                            DeviceName = "Smart Lock",
-                            DeviceType = "Access Control",
-                            HouseId = new Guid("2fa0c930-3bdf-40a4-8d47-9ef458520c76"),
-                            Status = "Inactive"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("7ba4c562-ab18-4b66-99d2-57cd0831a532"),
-                            DeviceName = "Smoke Detector",
-                            DeviceType = "Safety",
-                            HouseId = new Guid("95374554-afab-467f-b689-d53dc1ea92a5"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("1511169f-8e5f-4847-b218-96bb8ee19ab5"),
-                            DeviceName = "Light Bulb",
-                            DeviceType = "Lighting",
-                            HouseId = new Guid("a05d91e7-556c-480b-88ab-d9c5da38bea0"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("4a2d73b3-e951-403a-9149-4dd97db6cd2c"),
-                            DeviceName = "Water Leak Sensor",
-                            DeviceType = "Safety",
-                            HouseId = new Guid("16a86fdb-2c84-4302-824e-a49c00e4369e"),
-                            Status = "Inactive"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("cb5bda8f-a6c4-4fbc-91b1-28a7bbb927f8"),
-                            DeviceName = "Motion Sensor",
-                            DeviceType = "Security",
-                            HouseId = new Guid("57445249-2a18-4552-a929-d9e5949a7fb4"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("aff910da-bd8c-4dc5-9d04-a289a6c8e036"),
-                            DeviceName = "Smart Doorbell",
-                            DeviceType = "Access Control",
-                            HouseId = new Guid("6963f81e-16b2-4168-84aa-49c65c7ec2fc"),
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("20d87e50-c4b7-4a48-982c-1b6c5c869c2c"),
-                            DeviceName = "Garage Door Opener",
-                            DeviceType = "Convenience",
-                            HouseId = new Guid("648c36e6-cf4a-4686-a26e-a5b2605491c4"),
-                            Status = "Inactive"
-                        },
-                        new
-                        {
-                            DeviceId = new Guid("6270a75e-865d-4983-9f77-910aff4a7f57"),
-                            DeviceName = "Solar Panel Monitor",
-                            DeviceType = "Energy",
-                            HouseId = new Guid("0762f142-6ccb-4166-a049-f6c289447e6d"),
-                            Status = "Active"
-                        });
                 });
 
             modelBuilder.Entity("Server.Models.Entities.EmergencyContact", b =>
@@ -334,24 +253,6 @@ namespace Server.Migrations
                     b.ToTable("EmergencyContact");
                 });
 
-            modelBuilder.Entity("Server.Models.Entities.History", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Histories");
-                });
-
             modelBuilder.Entity("Server.Models.Entities.House", b =>
                 {
                     b.Property<Guid>("HouseId")
@@ -360,8 +261,7 @@ namespace Server.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -377,8 +277,7 @@ namespace Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -391,118 +290,6 @@ namespace Server.Migrations
                     b.HasKey("HouseId");
 
                     b.ToTable("Houses");
-
-                    b.HasData(
-                        new
-                        {
-                            HouseId = new Guid("d3b8a8f1-4c3b-4b8a-9c3b-4b8a9c3b4b8a"),
-                            Address = "123 Palm Street",
-                            City = "Cairo",
-                            Country = "Egypt",
-                            Description = "Luxurious villa with pool",
-                            Name = "Villa Oasis",
-                            State = "Cairo Governorate",
-                            ZipCode = "12345"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("e4c9b9f2-5d4c-5c9b-8d4c-5c9b8d4c5c9b"),
-                            Address = "456 Beach Avenue",
-                            City = "Alexandria",
-                            Country = "Egypt",
-                            Description = "Cozy bungalow near the sea",
-                            Name = "Sunset Bungalow",
-                            State = "Alexandria Governorate",
-                            ZipCode = "54321"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("2fa0c930-3bdf-40a4-8d47-9ef458520c76"),
-                            Address = "789 City Center",
-                            City = "Giza",
-                            Country = "Egypt",
-                            Description = "Modern apartment in downtown",
-                            Name = "Urban Apartment",
-                            State = "Giza Governorate",
-                            ZipCode = "67890"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("95374554-afab-467f-b689-d53dc1ea92a5"),
-                            Address = "101 Farm Road",
-                            City = "Fayoum",
-                            Country = "Egypt",
-                            Description = "Peaceful retreat in the countryside",
-                            Name = "Country Cottage",
-                            State = "Fayoum Governorate",
-                            ZipCode = "11223"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("a05d91e7-556c-480b-88ab-d9c5da38bea0"),
-                            Address = "202 Highland Blvd",
-                            City = "Aswan",
-                            Country = "Egypt",
-                            Description = "Rustic lodge with scenic views",
-                            Name = "Mountain Lodge",
-                            State = "Aswan Governorate",
-                            ZipCode = "44556"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("16a86fdb-2c84-4302-824e-a49c00e4369e"),
-                            Address = "303 Sand Dunes Way",
-                            City = "Siwa",
-                            Country = "Egypt",
-                            Description = "Elegant villa in the desert oasis",
-                            Name = "Desert Villa",
-                            State = "Matrouh Governorate",
-                            ZipCode = "99887"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("57445249-2a18-4552-a929-d9e5949a7fb4"),
-                            Address = "404 Shoreline Ave",
-                            City = "Luxor",
-                            Country = "Egypt",
-                            Description = "Charming house on the lake",
-                            Name = "Lake House",
-                            State = "Luxor Governorate",
-                            ZipCode = "77665"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("6963f81e-16b2-4168-84aa-49c65c7ec2fc"),
-                            Address = "505 Heritage St",
-                            City = "Minya",
-                            Country = "Egypt",
-                            Description = "Grand manor with rich history",
-                            Name = "Historic Manor",
-                            State = "Minya Governorate",
-                            ZipCode = "33445"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("648c36e6-cf4a-4686-a26e-a5b2605491c4"),
-                            Address = "606 Oceanview Dr",
-                            City = "Hurghada",
-                            Country = "Egypt",
-                            Description = "Spacious villa by the sea",
-                            Name = "Seaside Villa",
-                            State = "Red Sea Governorate",
-                            ZipCode = "22111"
-                        },
-                        new
-                        {
-                            HouseId = new Guid("0762f142-6ccb-4166-a049-f6c289447e6d"),
-                            Address = "707 Rocky Path",
-                            City = "Marsa Alam",
-                            Country = "Egypt",
-                            Description = "Secluded cabin on a cliff",
-                            Name = "Cliffside Cabin",
-                            State = "Red Sea Governorate",
-                            ZipCode = "99200"
-                        });
                 });
 
             modelBuilder.Entity("Server.Models.Entities.Notification", b =>

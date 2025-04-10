@@ -1,8 +1,9 @@
-﻿namespace Server.Models.Dtos
+﻿namespace Server.Models.DTOs.HistoryDTO
 {
-    public class AddHistoryDto
+    public class HistoryBaseDto
     {
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; }
     }
+
 }

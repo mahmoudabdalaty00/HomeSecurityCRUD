@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.Entities
 {
@@ -6,9 +7,10 @@ namespace Server.Models.Entities
     {
         [Key]
         public Guid Id { get; set; }
+        [Base64String]
+        [Column(TypeName = "nvarchar(max)")]
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; }
-
     }
 
 }

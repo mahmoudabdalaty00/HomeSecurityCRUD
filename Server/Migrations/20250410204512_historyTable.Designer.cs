@@ -12,8 +12,8 @@ using Server.Date;
 namespace Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311234619_UpdateUserModel")]
-    partial class UpdateUserModel
+    [Migration("20250410204512_historyTable")]
+    partial class historyTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,96 +185,33 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AccessLogs");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.Alarm", b =>
-                {
-                    b.Property<int>("AlarmId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlarmId"));
-
-                    b.Property<string>("AlarmType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("TriggerTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AlarmId");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("Alarms");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.Camera", b =>
-                {
-                    b.Property<int>("CameraId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CameraId"));
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("RecordingStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Resolution")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("CameraId");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("Cameras");
+                    b.ToTable("AccessLog");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.Device", b =>
                 {
-                    b.Property<int>("DeviceId")
+                    b.Property<Guid>("DeviceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeviceId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("DeviceName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DeviceType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("HouseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("HouseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("DeviceId");
@@ -284,6 +221,88 @@ namespace Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Devices");
+
+                    b.HasData(
+                        new
+                        {
+                            DeviceId = new Guid("f0e831cf-1223-4344-a8ff-2505a905c2b7"),
+                            DeviceName = "Thermostat",
+                            DeviceType = "Temperature",
+                            HouseId = new Guid("d3b8a8f1-4c3b-4b8a-9c3b-4b8a9c3b4b8a"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("d017b91b-f958-46ba-be9b-c95a3769e217"),
+                            DeviceName = "Security Camera",
+                            DeviceType = "Camera",
+                            HouseId = new Guid("e4c9b9f2-5d4c-5c9b-8d4c-5c9b8d4c5c9b"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("dd7c82c9-8b51-45a3-b470-d48a24096f34"),
+                            DeviceName = "Smart Lock",
+                            DeviceType = "Access Control",
+                            HouseId = new Guid("2fa0c930-3bdf-40a4-8d47-9ef458520c76"),
+                            Status = "Inactive"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("7ba4c562-ab18-4b66-99d2-57cd0831a532"),
+                            DeviceName = "Smoke Detector",
+                            DeviceType = "Safety",
+                            HouseId = new Guid("95374554-afab-467f-b689-d53dc1ea92a5"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("1511169f-8e5f-4847-b218-96bb8ee19ab5"),
+                            DeviceName = "Light Bulb",
+                            DeviceType = "Lighting",
+                            HouseId = new Guid("a05d91e7-556c-480b-88ab-d9c5da38bea0"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("4a2d73b3-e951-403a-9149-4dd97db6cd2c"),
+                            DeviceName = "Water Leak Sensor",
+                            DeviceType = "Safety",
+                            HouseId = new Guid("16a86fdb-2c84-4302-824e-a49c00e4369e"),
+                            Status = "Inactive"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("cb5bda8f-a6c4-4fbc-91b1-28a7bbb927f8"),
+                            DeviceName = "Motion Sensor",
+                            DeviceType = "Security",
+                            HouseId = new Guid("57445249-2a18-4552-a929-d9e5949a7fb4"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("aff910da-bd8c-4dc5-9d04-a289a6c8e036"),
+                            DeviceName = "Smart Doorbell",
+                            DeviceType = "Access Control",
+                            HouseId = new Guid("6963f81e-16b2-4168-84aa-49c65c7ec2fc"),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("20d87e50-c4b7-4a48-982c-1b6c5c869c2c"),
+                            DeviceName = "Garage Door Opener",
+                            DeviceType = "Convenience",
+                            HouseId = new Guid("648c36e6-cf4a-4686-a26e-a5b2605491c4"),
+                            Status = "Inactive"
+                        },
+                        new
+                        {
+                            DeviceId = new Guid("6270a75e-865d-4983-9f77-910aff4a7f57"),
+                            DeviceName = "Solar Panel Monitor",
+                            DeviceType = "Energy",
+                            HouseId = new Guid("0762f142-6ccb-4166-a049-f6c289447e6d"),
+                            Status = "Active"
+                        });
                 });
 
             modelBuilder.Entity("Server.Models.Entities.EmergencyContact", b =>
@@ -315,37 +334,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EmergencyContacts");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.EventLog", b =>
-                {
-                    b.Property<int>("EventId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventId"));
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EventId");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("EventLogs");
+                    b.ToTable("EmergencyContact");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.History", b =>
@@ -368,15 +357,14 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Entities.House", b =>
                 {
-                    b.Property<int>("HouseId")
+                    b.Property<Guid>("HouseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HouseId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -392,15 +380,12 @@ namespace Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -408,9 +393,119 @@ namespace Server.Migrations
 
                     b.HasKey("HouseId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Houses");
+
+                    b.HasData(
+                        new
+                        {
+                            HouseId = new Guid("d3b8a8f1-4c3b-4b8a-9c3b-4b8a9c3b4b8a"),
+                            Address = "123 Palm Street",
+                            City = "Cairo",
+                            Country = "Egypt",
+                            Description = "Luxurious villa with pool",
+                            Name = "Villa Oasis",
+                            State = "Cairo Governorate",
+                            ZipCode = "12345"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("e4c9b9f2-5d4c-5c9b-8d4c-5c9b8d4c5c9b"),
+                            Address = "456 Beach Avenue",
+                            City = "Alexandria",
+                            Country = "Egypt",
+                            Description = "Cozy bungalow near the sea",
+                            Name = "Sunset Bungalow",
+                            State = "Alexandria Governorate",
+                            ZipCode = "54321"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("2fa0c930-3bdf-40a4-8d47-9ef458520c76"),
+                            Address = "789 City Center",
+                            City = "Giza",
+                            Country = "Egypt",
+                            Description = "Modern apartment in downtown",
+                            Name = "Urban Apartment",
+                            State = "Giza Governorate",
+                            ZipCode = "67890"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("95374554-afab-467f-b689-d53dc1ea92a5"),
+                            Address = "101 Farm Road",
+                            City = "Fayoum",
+                            Country = "Egypt",
+                            Description = "Peaceful retreat in the countryside",
+                            Name = "Country Cottage",
+                            State = "Fayoum Governorate",
+                            ZipCode = "11223"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("a05d91e7-556c-480b-88ab-d9c5da38bea0"),
+                            Address = "202 Highland Blvd",
+                            City = "Aswan",
+                            Country = "Egypt",
+                            Description = "Rustic lodge with scenic views",
+                            Name = "Mountain Lodge",
+                            State = "Aswan Governorate",
+                            ZipCode = "44556"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("16a86fdb-2c84-4302-824e-a49c00e4369e"),
+                            Address = "303 Sand Dunes Way",
+                            City = "Siwa",
+                            Country = "Egypt",
+                            Description = "Elegant villa in the desert oasis",
+                            Name = "Desert Villa",
+                            State = "Matrouh Governorate",
+                            ZipCode = "99887"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("57445249-2a18-4552-a929-d9e5949a7fb4"),
+                            Address = "404 Shoreline Ave",
+                            City = "Luxor",
+                            Country = "Egypt",
+                            Description = "Charming house on the lake",
+                            Name = "Lake House",
+                            State = "Luxor Governorate",
+                            ZipCode = "77665"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("6963f81e-16b2-4168-84aa-49c65c7ec2fc"),
+                            Address = "505 Heritage St",
+                            City = "Minya",
+                            Country = "Egypt",
+                            Description = "Grand manor with rich history",
+                            Name = "Historic Manor",
+                            State = "Minya Governorate",
+                            ZipCode = "33445"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("648c36e6-cf4a-4686-a26e-a5b2605491c4"),
+                            Address = "606 Oceanview Dr",
+                            City = "Hurghada",
+                            Country = "Egypt",
+                            Description = "Spacious villa by the sea",
+                            Name = "Seaside Villa",
+                            State = "Red Sea Governorate",
+                            ZipCode = "22111"
+                        },
+                        new
+                        {
+                            HouseId = new Guid("0762f142-6ccb-4166-a049-f6c289447e6d"),
+                            Address = "707 Rocky Path",
+                            City = "Marsa Alam",
+                            Country = "Egypt",
+                            Description = "Secluded cabin on a cliff",
+                            Name = "Cliffside Cabin",
+                            State = "Red Sea Governorate",
+                            ZipCode = "99200"
+                        });
                 });
 
             modelBuilder.Entity("Server.Models.Entities.Notification", b =>
@@ -447,38 +542,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.Sensor", b =>
-                {
-                    b.Property<int>("SensorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SensorId"));
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastTriggered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SensorType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("SensorId");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("Sensors");
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.User", b =>
@@ -514,11 +578,6 @@ namespace Server.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -552,6 +611,7 @@ namespace Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -592,7 +652,7 @@ namespace Server.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSetting");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -657,71 +717,25 @@ namespace Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Server.Models.Entities.Alarm", b =>
-                {
-                    b.HasOne("Server.Models.Entities.Device", "Device")
-                        .WithMany()
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.Camera", b =>
-                {
-                    b.HasOne("Server.Models.Entities.Device", "Device")
-                        .WithMany()
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Device");
-                });
-
             modelBuilder.Entity("Server.Models.Entities.Device", b =>
                 {
                     b.HasOne("Server.Models.Entities.House", "House")
                         .WithMany("Devices")
-                        .HasForeignKey("HouseId");
-
-                    b.HasOne("Server.Models.Entities.User", "User")
-                        .WithMany("Devices")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("HouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("House");
+                    b.HasOne("Server.Models.Entities.User", null)
+                        .WithMany("Devices")
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("User");
+                    b.Navigation("House");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.EmergencyContact", b =>
                 {
                     b.HasOne("Server.Models.Entities.User", "User")
                         .WithMany("EmergencyContacts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.EventLog", b =>
-                {
-                    b.HasOne("Server.Models.Entities.Device", "Device")
-                        .WithMany()
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.House", b =>
-                {
-                    b.HasOne("Server.Models.Entities.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -738,17 +752,6 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Server.Models.Entities.Sensor", b =>
-                {
-                    b.HasOne("Server.Models.Entities.Device", "Device")
-                        .WithMany()
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Device");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.UserSetting", b =>

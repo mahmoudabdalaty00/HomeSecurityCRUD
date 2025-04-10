@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.Entities
 {
     public class Device
     {
         [Key]
-        public int DeviceId { get; set; }
+        public Guid DeviceId { get; set; }
 
         [Required]
         public string DeviceName { get; set; }
@@ -14,14 +15,15 @@ namespace Server.Models.Entities
         public string DeviceType { get; set; }
 
         [Required]
-        public string Status { get; set; } // e.g., Online, Offline
+        public string Status { get; set; }
 
-        // Foreign Key to User
-        public string UserId { get; set; }
-        public User User { get; set; }
 
-        // Foreign Key to House (Device belongs to a house)
-        public int? HouseId { get; set; }
+        //public string UserId { get; set; }
+        //public User User { get; set; }
+
+        // Foreign Key to House (Device belongs to a house)[
+        [ForeignKey(nameof(House))]
+        public Guid HouseId { get; set; }
         public House House { get; set; }
     }
 

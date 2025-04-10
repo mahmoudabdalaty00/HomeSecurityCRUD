@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Date;
-using Server.Models.Dtos;
-using Server.Models.Entities;
-using System.Security;
+using Server.Exceptions;
+using Server.Models.DTOs.HistoryDTO;
+using Server.Repo.interfaces;
 
 namespace Server.Controllers
 {
@@ -10,59 +9,88 @@ namespace Server.Controllers
     [ApiController]
     public class HistoryController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IHistoriesRepository _historyRepo;
 
-        public HistoryController(ApplicationDbContext context)
+        public HistoryController(IHistoriesRepository historyRepo)
         {
-            _context = context;
+            _historyRepo = historyRepo;
         }
 
-        [HttpGet]
-        public IActionResult GetAllhistory()
+        [HttpGet("All")]
+        public async Task<ActionResult> GetAllHistory()
         {
-            var history = _context.Histories.ToList();
-            
+            var histories = await _historyRepo.GetAllAsync();
+            return Ok(histories);
+
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetHistory(Guid id)
+        {
+            var history = await _historyRepo.GetByIdAsync(id);
+
+            if (history == null)
+                throw new NotFoundException($"house With this Id:{id},not Exist");
             return Ok(history);
         }
 
-        // here we skip Getbyid method & Put  beacause it is history 
-        //were we can't update 
-        [HttpPost]
-        public IActionResult AddHistory(AddHistoryDto historyDto)
+        [HttpPost("add-history")]
+        public async Task<ActionResult> AddHistory([FromForm] CreateHistoryDto file)
         {
-
-            var history = new History
+            if (file.FileURl == null || file.FileURl.Length == 0)
             {
-                ImageUrl = historyDto.ImageUrl,
-                Date = historyDto.Date
-            };
-            _context.Histories.Add(history);
-            _context.SaveChanges();
-            return Ok(history);
+                return BadRequest("File is required.");
+            }
 
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await file.FileURl.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
+
+                var base64String = Convert.ToBase64String(fileBytes);
+
+                var history = new CreateHistoryDto
+                {
+                    ImageUrl = base64String,
+                    Date = DateTime.UtcNow,
+                };
+
+                var result = await _historyRepo.AddAsync(history);
+
+                if (!result.Success)
+                {
+                    return BadRequest(new { message = result.Message });
+                }
+
+          
+                return Ok(new { message = "History added successfully.", history = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", detail = ex.Message });
+            }
         }
 
-        [HttpDelete()]
-        public IActionResult DeleteHistory()
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteHistory(Guid id)
         {
-            // Calculate the date one week ago
-            var oneWeekAgo = DateTime.Now.AddDays(-7);
+            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            try
+            {
+                await _historyRepo.DeleteAsync(id);
+                return Ok("House deleted successfully.");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", detail = ex.Message });
+            }
 
-            // Retrieve and filter history records older than one week
-            var historiesToRemove = _context.Histories
-                .Where(h => h.Date < oneWeekAgo)
-                .ToList();
-
-            // Remove the filtered records
-            _context.Histories.RemoveRange(historiesToRemove);
-
-            // Save changes to the database
-            _context.SaveChanges();
-
-            return Ok();
         }
-
     }
 }
 
- 

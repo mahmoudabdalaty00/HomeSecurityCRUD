@@ -1,80 +1,88 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Date;
+using Server.Exceptions;
+using Server.Models.DTOs.HouseDTO;
 using Server.Models.Entities;
+using Server.Repo.interfaces;
+using Server.Repo.repositories;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class HousesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    public HousesController(ApplicationDbContext context) { _context = context; }
+    private readonly IHouseRepository _houseRepo;
 
-   
-    // Gets all houses for the authenticated user.
- 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<House>>> GetHouses()
+    public HousesController(IHouseRepository houseRepo)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _context.Houses.Where(h => h.UserId == userId).ToListAsync();
+        _houseRepo = houseRepo;
     }
 
+
+    // Gets all houses for the authenticated user.
+
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllHouses()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var houses = await _houseRepo.GetAllAsync();
+        return Ok(houses);
+
+    }
 
     // get a house details by id
     [HttpGet("{id}")]
-    public async Task<ActionResult<House>> GetHouse(int id)
+    public async Task<ActionResult> GetHouse(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var house = await _context.Houses.FirstOrDefaultAsync(h => h.HouseId == id && h.UserId == userId);
+        var house = await _houseRepo.GetByIdAsync(id);
 
-        if (house == null) return NotFound();
-        return house;
+        if (house == null)
+            throw new NotFoundException($"house With this Id:{id},not Exist");
+        return Ok(house);
     }
-    
+
     // Adds a new house.  
-    [HttpPost]
-    public async Task<ActionResult<House>> AddHouse(House house)
+    [HttpPost("add-house")]
+    public async Task<ActionResult> AddHouse(CreateHouseDTO house)
     {
-        house.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        _context.Houses.Add(house);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetHouses), new { id = house.HouseId }, house);
+        house.UserId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var result = await _houseRepo.AddAsync(house);
+
+        return result.Success ? Ok(house): BadRequest(result.Message);
     }
 
     //update house details
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateHouse(int id, House houseUpdate)
+    public async Task<IActionResult> UpdateHouse(UpdateHouseDTO updateHouseDTO)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var house = await _context.Houses.FindAsync(id);
-
-        if (house == null || house.UserId != userId) return NotFound();
-
-        house.Name = houseUpdate.Name;
-        house.Address = houseUpdate.Address;
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        var result = await _houseRepo.UpdateAsync(updateHouseDTO);
+         
+       return result.Success ? Ok(updateHouseDTO) : BadRequest(result.Message);
     }
 
 
     // Deletes a house by id.
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteHouse(int id)
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteHouse(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var house = await _context.Houses.FindAsync(id);
+        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        try
+        {
+            await _houseRepo.DeleteAsync(id);
+            return Ok("House deleted successfully.");
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred.", detail = ex.Message });
+        }
 
-        if (house == null || house.UserId != userId) return NotFound();
-
-        _context.Houses.Remove(house);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
     }
 
 }

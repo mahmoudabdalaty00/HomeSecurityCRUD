@@ -1,99 +1,83 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Server.Date;
-using Server.Models.Entities;
+using Server.Exceptions;
+using Server.Models.DTOs.DeviceDTo;
+using Server.Repo.interfaces;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using System.Security;
-using Server.Models.Dtos;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class DevicesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IDeviceRepository _deviceRepo;
 
-    public DevicesController(ApplicationDbContext context)
+    public DevicesController(IDeviceRepository deviceRepo)
     {
-        _context = context;
+        _deviceRepo = deviceRepo;
     }
 
- 
-    // Gets all devices for the authenticated user.    
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Device>>> GetDevices()
+
+    // Gets all houses for the authenticated user.
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllDevices()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _context.Devices
-            .Where(d => d.House.UserId == userId)
-            .ToListAsync();
+        var deviceId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var devices = await _deviceRepo.GetAllAsync();
+        return Ok(devices);
+
     }
 
-    // Gets a specific device by ID.   
+    // get a house details by id
     [HttpGet("{id}")]
-    public async Task<ActionResult<Device>> GetDevice(int id)
+    public async Task<ActionResult> GetDevice(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var device = await _context.Devices
-            .Include(d => d.House)
-            .FirstOrDefaultAsync(d => d.DeviceId == id && d.House.UserId == userId);
+        var device = await _deviceRepo.GetByIdAsync(id);
 
-        if (device == null) return NotFound();
-        return device;
+        if (device == null)
+            throw new NotFoundException($"house With this Id:{id},not Exist");
+        return Ok(device);
     }
 
-    // Adds a new device to a house.
-    [HttpPost]
-    public async Task<ActionResult<Device>> AddDevice(Device device)
+    // Adds a new house.  
+    [HttpPost("add-device")]
+    public async Task<ActionResult> AddDevice(CreateDeviceDTO deviceDTO)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var house = await _context.Houses.FindAsync(device.HouseId);
-
-        if (house == null || house.UserId != userId)
-            return Unauthorized();
-
-        _context.Devices.Add(device);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetDevice), new { id = device.DeviceId }, device);
+        var result = await _deviceRepo.AddAsync(deviceDTO);
+        return result.Success ? Ok(deviceDTO) : BadRequest(result.Message);
     }
 
-    // Updates an existing device.    
+    //update house details
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateDevice(int id, UpdateDeviceDto deviceUpdate)
+    public async Task<IActionResult> UpdateDevice(UpdateDeviceDTO deviceDTO)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var device = await _context.Devices
-            .Include(d => d.House)
-            .FirstOrDefaultAsync(d => d.DeviceId == id && d.House.UserId == userId);
+        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var result = await _deviceRepo.UpdateAsync(deviceDTO);
 
-        if (device == null) return NotFound();
-
-        device.DeviceName = deviceUpdate.DeviceName;
-        device.Status = deviceUpdate.Status;
-        device.DeviceType = deviceUpdate.DeviceType;
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        return result.Success ? Ok(deviceDTO) : BadRequest(result.Message);
     }
-    
-    // Deletes a device. 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteDevice(int id)
+
+
+    // Deletes a house by id.
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteDevice(Guid id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var device = await _context.Devices
-            .Include(d => d.House)
-            .FirstOrDefaultAsync(d => d.DeviceId == id && d.House.UserId == userId);
+        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        try
+        {
+            await _deviceRepo.DeleteAsync(id);
+            return Ok("House deleted successfully.");
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred.", detail = ex.Message });
+        }
 
-        if (device == null) return NotFound();
-
-        _context.Devices.Remove(device);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
     }
 }
 
