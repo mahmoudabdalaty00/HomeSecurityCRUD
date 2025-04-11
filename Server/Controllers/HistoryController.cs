@@ -30,7 +30,7 @@ namespace Server.Controllers
             var history = await _historyRepo.GetByIdAsync(id);
 
             if (history == null)
-                throw new NotFoundException($"house With this Id:{id},not Exist");
+                throw new NotFoundException($"History With this Id:{id},not Exist");
             return Ok(history);
         }
 
@@ -79,7 +79,7 @@ namespace Server.Controllers
             try
             {
                 await _historyRepo.DeleteAsync(id);
-                return Ok("House deleted successfully.");
+                return Ok("History deleted successfully.");
             }
             catch (NotFoundException ex)
             {

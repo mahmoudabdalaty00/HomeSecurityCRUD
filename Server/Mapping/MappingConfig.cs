@@ -2,6 +2,7 @@
 using Server.Models.DTOs.DeviceDTo;
 using Server.Models.DTOs.HistoryDTO;
 using Server.Models.DTOs.HouseDTO;
+using Server.Models.DTOs.NotificationDTO;
 using Server.Models.Entities;
 
 namespace Server.Mapping
@@ -24,6 +25,11 @@ namespace Server.Mapping
             CreateMap<History, GetHistoryDto>();
             CreateMap<History, CreateHistoryDto>().ReverseMap();
             CreateMap<History, UpdateHistoryDto>().ReverseMap();
+
+            //Notification mapping
+            CreateMap<Notification, GetNotificationDTO>();
+            CreateMap<Notification, CreateNotificationDTO>().ReverseMap();
+            CreateMap<Notification, UpdateNotificationDTO>().ReverseMap();
             
         }
     }

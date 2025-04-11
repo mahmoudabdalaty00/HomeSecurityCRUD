@@ -5,7 +5,7 @@ using Server.Models.Entities;
 using Server.Repo.interfaces;
 using Server.Repo.repositories;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,9 +46,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IGenericRepository<House>, GenericRepository<House>>();
 builder.Services.AddScoped<IGenericRepository<Device>, GenericRepository<Device>>();
 builder.Services.AddScoped<IGenericRepository<History>, GenericRepository<History>>();
+builder.Services.AddScoped<IGenericRepository<Notification>, GenericRepository<Notification>>();
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IHistoriesRepository, HistoryRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 #endregion
 

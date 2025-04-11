@@ -8,9 +8,6 @@ namespace Server.Models.Entities
         [Key]
         public int AlarmId { get; set; }
 
-        [Required]
-        public int DeviceId { get; set; }
-
         [Required, StringLength(50)]
         public string AlarmType { get; set; } // Siren, Silent
 
@@ -22,6 +19,7 @@ namespace Server.Models.Entities
         // Navigation Property
         [ForeignKey("DeviceId")]
         public Device Device { get; set; }
+        public int DeviceId { get; set; }
     }
 
 }

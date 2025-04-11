@@ -11,4 +11,6 @@ namespace Server.Repo.interfaces
         public Task<ServiceResponse> UpdateAsync(UpdateHouseDTO houseDTO);
         public Task<ServiceResponse> DeleteAsync(Guid id);
     }
+
+
 }

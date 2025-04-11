@@ -36,7 +36,7 @@ public class DevicesController : ControllerBase
         var device = await _deviceRepo.GetByIdAsync(id);
 
         if (device == null)
-            throw new NotFoundException($"house With this Id:{id},not Exist");
+            throw new NotFoundException($"Device With this Id:{id},not Exist");
         return Ok(device);
     }
 
@@ -44,6 +44,7 @@ public class DevicesController : ControllerBase
     [HttpPost("add-device")]
     public async Task<ActionResult> AddDevice(CreateDeviceDTO deviceDTO)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var result = await _deviceRepo.AddAsync(deviceDTO);
         return result.Success ? Ok(deviceDTO) : BadRequest(result.Message);
     }
@@ -67,7 +68,7 @@ public class DevicesController : ControllerBase
         try
         {
             await _deviceRepo.DeleteAsync(id);
-            return Ok("House deleted successfully.");
+            return Ok("device deleted successfully.");
         }
         catch (NotFoundException ex)
         {
