@@ -53,6 +53,12 @@ namespace Server.Repo.repositories
            _context.Set<T>().Update(entity);
             return await _context.SaveChangesAsync();
         }
+    
+        public IQueryable<T> Query()
+        {
+            return _context.Set<T>();
+        }
+    
     }
 
 }

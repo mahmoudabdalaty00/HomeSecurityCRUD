@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Exceptions;
-using Server.Models.DTOs.HouseDTO;
 using Server.Models.DTOs.NotificationDTO;
 using Server.Repo.interfaces;
 using System.Security.Claims;
 
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class NotificationsController : ControllerBase

@@ -47,10 +47,12 @@ builder.Services.AddScoped<IGenericRepository<House>, GenericRepository<House>>(
 builder.Services.AddScoped<IGenericRepository<Device>, GenericRepository<Device>>();
 builder.Services.AddScoped<IGenericRepository<History>, GenericRepository<History>>();
 builder.Services.AddScoped<IGenericRepository<Notification>, GenericRepository<Notification>>();
+builder.Services.AddScoped<IGenericRepository<Alarm>, GenericRepository<Alarm>>();
 builder.Services.AddScoped<IHouseRepository, HouseRepository>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IHistoriesRepository, HistoryRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IAlarmRepository, AlarmRepository>();
 
 #endregion
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Server.Models.DTOs.AlarmDTO;
 using Server.Models.DTOs.DeviceDTo;
 using Server.Models.DTOs.HistoryDTO;
 using Server.Models.DTOs.HouseDTO;
@@ -30,6 +31,11 @@ namespace Server.Mapping
             CreateMap<Notification, GetNotificationDTO>();
             CreateMap<Notification, CreateNotificationDTO>().ReverseMap();
             CreateMap<Notification, UpdateNotificationDTO>().ReverseMap();
+            
+            //Alarm mapping
+            CreateMap<Alarm, GetAlarmTriggerDTO>();
+            CreateMap<Alarm, AlarmTriggerDTO>().ReverseMap();
+ 
             
         }
     }

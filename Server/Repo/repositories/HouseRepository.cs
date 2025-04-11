@@ -4,6 +4,7 @@ using Server.Models.DTOs;
 using Server.Models.DTOs.HouseDTO;
 using Server.Models.Entities;
 using Server.Repo.interfaces;
+using System.Threading.Tasks;
 
 namespace Server.Repo.repositories
 {
@@ -67,6 +68,12 @@ namespace Server.Repo.repositories
 
         }
 
+        public async Task<IQueryable<House>> Query()
+        {
+            var houses = _repository.Query();
+            return houses;  
+        }
+
         public async Task<ServiceResponse> UpdateAsync(UpdateHouseDTO houseDTO)
         {
             var house = _mapper.Map<House>(houseDTO);
@@ -77,5 +84,7 @@ namespace Server.Repo.repositories
                 Message = result > 0 ? "House updated successfully" : "Failed to update house"
             };
         }
+
+    
     }
 }
