@@ -6,7 +6,7 @@ namespace Server.Models.Entities
     public class User : IdentityUser
     {
         [Key]
-        public string UserId { get; set; }
+        public Guid Id { get; set; }
 
         [Required, StringLength(100)]
         public string UserName { get; set; }
@@ -34,5 +34,4 @@ namespace Server.Models.Entities
         public ICollection<EmergencyContact> EmergencyContacts { get; set; }
         public UserSetting UserSetting { get; set; }
     }
-
 }

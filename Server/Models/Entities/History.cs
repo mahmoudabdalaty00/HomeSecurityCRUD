@@ -11,6 +11,8 @@ namespace Server.Models.Entities
         [Column(TypeName = "nvarchar(max)")]
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; }
+
+
     }
 
 }

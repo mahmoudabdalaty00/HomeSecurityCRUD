@@ -29,6 +29,7 @@ namespace Server.Models.Entities
         public Notification Notification { get; set; }
         public Guid? NotificationId { get; set; }
         
+
         
         [ForeignKey("DeviceId")]
         public Device Device { get; set; }
