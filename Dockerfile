@@ -1,18 +1,23 @@
-# Stage 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+# syntax=docker/dockerfile:1
 
-# Copy the csproj and restore as distinct layers
-COPY Server/*.csproj ./Server/
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+
+# Copy all project files
+COPY . .
+
+# Restore dependencies
 RUN dotnet restore ./Server/HomeSecurityCRUD.csproj
 
-# Copy everything else and build
-COPY . .
-RUN dotnet publish ./Server/HomeSecurityCRUD.csproj -c Release -o /app/out
+# Build
+RUN dotnet publish ./Server/HomeSecurityCRUD.csproj -c Release -o /app/publish
 
-# Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "HomeSecurityCRUD.dll"]
