@@ -11,10 +11,11 @@ WORKDIR /src
 COPY . .
 
 # Restore dependencies
-RUN dotnet restore ./Server/HomeSecurityCRUD.csproj
+RUN dotnet restore HomeSecurityCRUD.csproj
+
 
 # Build
-RUN dotnet publish ./Server/HomeSecurityCRUD.csproj -c Release -o /app/publish
+RUN dotnet restore HomeSecurityCRUD.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
