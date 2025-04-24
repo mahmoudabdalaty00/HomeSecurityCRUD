@@ -53,7 +53,7 @@ public class DevicesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDevice(UpdateDeviceDTO deviceDTO)
     {
-        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var result = await _deviceRepo.UpdateAsync(deviceDTO);
 
         return result.Success ? Ok(deviceDTO) : BadRequest(result.Message);
@@ -64,7 +64,7 @@ public class DevicesController : ControllerBase
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteDevice(Guid id)
     {
-        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             await _deviceRepo.DeleteAsync(id);

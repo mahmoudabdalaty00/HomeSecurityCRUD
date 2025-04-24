@@ -19,7 +19,7 @@ namespace Server.Models.Entities
 
 
         //public string UserId { get; set; }
-        //public User User { get; set; }
+        //public ApplicationUser ApplicationUser { get; set; }
 
         // Foreign Key to House (Device belongs to a house)
         [ForeignKey(nameof(House))]

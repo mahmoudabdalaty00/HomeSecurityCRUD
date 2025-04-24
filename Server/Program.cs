@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Server.Date;
 using Server.Mapping;
+using Server.Models.DTOs;
 using Server.Models.Entities;
 using Server.Repo.interfaces;
 using Server.Repo.repositories;
+using System.Text;
 using System.Text.Json.Serialization;
 
 
@@ -18,7 +24,18 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
 
+});
 #region Db Connection  
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -28,7 +45,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 #endregion
 
 #region Identity settings
-//builder.Services.AddIdentity<User, IdentityRole>(options =>
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 //{
 //    options.Password.RequireDigit = false;
 //options.Password.RequireLowercase = false;
@@ -38,6 +55,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //})
 //    .AddEntityFrameworkStores<ApplicationDbContext>()
 //    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();// AddDefaultTokenProviders is
+                                                                                                                             // to make GeneratePasswordResetTokenAsync Work
+
+// Configuration of Password when Register
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = false;
+});
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>(); // object that holds data in Jwt Section
+builder.Services.AddSingleton(jwtOptions); // register while dependency injection in UserController in primary Constructor
+builder.Services.AddScoped<JwtRepository>();
+
 #endregion
 
 
@@ -83,14 +116,33 @@ builder.Services.AddScoped<IAlarmRepository, AlarmRepository>();
 //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
 //        };
 //    });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // The Default Authentication is JWT not Cookies
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // if unauthorized return to him "unauthorized" not "Not Found"
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; // for any other Schema
+}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.SaveToken = true; // save Token String in AuthenticationProperties in case you needed it 
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidateAudience = true,
+        ValidAudience = jwtOptions.Audience,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)) // transform SingingKey
+                                                                                                   // from string to Byte
+    };
+
+});
+
 #endregion
 
 #region Authorization settings
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-//    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
-//});
+
 #endregion
 
 #region AutoMapper
@@ -111,37 +163,8 @@ else
 }
 app.UseHttpsRedirection();
 
-#region Create Admin User
-//using (var scope = app.Services.CreateScope())
-//{
-//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-
-//    string[] roles = { "Admin", "User" };
-//    foreach (var role in roles)
-//    {
-//        if (!await roleManager.RoleExistsAsync(role))
-//        {
-//            await roleManager.CreateAsync(new IdentityRole(role));
-//        }
-//    }
-
-//    // Create Admin User
-//    var adminEmail = "admin@example.com";
-//    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-//    if (adminUser == null)
-//    {
-//        var newAdmin = new User
-//        {
-//            UserName = adminEmail,
-//            Email = adminEmail,
-//            Address = "Default Address" // Set a default value for Address
-//        };
-//        await userManager.CreateAsync(newAdmin, "Admin@1234");
-//        await userManager.AddToRoleAsync(newAdmin, "Admin");
-//    }
-//}
-#endregion
+app.UseStaticFiles();
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

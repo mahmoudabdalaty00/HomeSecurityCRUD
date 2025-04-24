@@ -68,7 +68,7 @@ public class HousesController : ControllerBase
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteHouse(Guid id)
     {
-        // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             await _houseRepo.DeleteAsync(id);

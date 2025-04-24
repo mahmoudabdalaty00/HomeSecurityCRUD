@@ -75,7 +75,7 @@ namespace Server.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteHistory(Guid id)
         {
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
                 await _historyRepo.DeleteAsync(id);

@@ -35,5 +35,4 @@ namespace Server.Models.Entities
         public Device Device { get; set; }
         public Guid? DeviceId { get; set; }
     }
-
 }

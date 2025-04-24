@@ -42,18 +42,18 @@ namespace Server.Repo.repositories
         public async Task<IEnumerable<GetNotificationDTO>> GetAllAsync()
         {
             var notifS = await _notificationRepo.GetAllAsync();
-            if(notifS == null || !notifS.Any())
+            if (notifS == null || !notifS.Any())
             {
                 return Enumerable.Empty<GetNotificationDTO>();
             }
-            var notifSDto =  _mapper.Map<IEnumerable<GetNotificationDTO>>(notifS);
+            var notifSDto = _mapper.Map<IEnumerable<GetNotificationDTO>>(notifS);
             return notifSDto;
         }
 
         public async Task<GetNotificationDTO> GetByIdAsync(Guid id)
         {
             var notif = await _notificationRepo.GetByIdAsync(id);
-            if ( notif == null )
+            if (notif == null)
             {
                 throw new NotFoundException($"Notification with id:{id} not found");
             }

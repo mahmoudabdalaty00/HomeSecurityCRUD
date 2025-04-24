@@ -16,9 +16,9 @@
 //    public class AdminController : ControllerBase
 //    {
 //        private readonly ApplicationDbContext _context;
-//        private readonly UserManager<User> _userManager;
+//        private readonly UserManager<ApplicationUser> _userManager;
 
-//        public AdminController(ApplicationDbContext context, UserManager<User> userManager)
+//        public AdminController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
 //        {
 //            _context = context;
 //            _userManager = userManager;
@@ -28,8 +28,8 @@
 //        //[HttpGet("houses")]
 //        //public async Task<ActionResult<IEnumerable<House>>> GetHouses()
 //        //{
-//        //   // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//        //    var houses =  await _context.Houses.Include(h => h.User).ToListAsync();
+//        //   // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//        //    var houses =  await _context.Houses.Include(h => h.ApplicationUser).ToListAsync();
 //        //    return houses;
 //        //}
 
@@ -37,8 +37,8 @@
 //        //[HttpGet("houses/{id}")]
 //        //public async Task<ActionResult<House>> GetHouse(int id)
 //        //{
-//        //   // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//        //    var house = await _context.Houses.Include(h=> h.User)
+//        //   // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//        //    var house = await _context.Houses.Include(h=> h.ApplicationUser)
 //        //        .FirstOrDefaultAsync(h => h.HouseId == id);
 
 //        //    if (house == null) 
@@ -51,7 +51,7 @@
 //        [HttpDelete("houses/{id}")]
 //        public async Task<IActionResult> DeleteHouse(int id)
 //        {
-//           // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//           // var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 //            var house = await _context.Houses.FindAsync(id);
 
 //            if (house == null ) 

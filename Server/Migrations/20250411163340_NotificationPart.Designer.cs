@@ -563,7 +563,7 @@ namespace Server.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("Server.Models.Entities.User", b =>
+            modelBuilder.Entity("Server.Models.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -684,7 +684,7 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -693,7 +693,7 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -708,7 +708,7 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -717,7 +717,7 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -726,13 +726,13 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Entities.AccessLog", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", "User")
+                    b.HasOne("Server.Models.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("AccessLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.Device", b =>
@@ -743,7 +743,7 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany("Devices")
                         .HasForeignKey("UserId");
 
@@ -752,13 +752,13 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Entities.EmergencyContact", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", "User")
+                    b.HasOne("Server.Models.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("EmergencyContacts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.Notification", b =>
@@ -771,7 +771,7 @@ namespace Server.Migrations
                         .WithMany()
                         .HasForeignKey("HouseId");
 
-                    b.HasOne("Server.Models.Entities.User", null)
+                    b.HasOne("Server.Models.Entities.ApplicationUser", null)
                         .WithMany("Notifications")
                         .HasForeignKey("UserId");
 
@@ -782,13 +782,13 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Entities.UserSetting", b =>
                 {
-                    b.HasOne("Server.Models.Entities.User", "User")
+                    b.HasOne("Server.Models.Entities.ApplicationUser", "ApplicationUser")
                         .WithOne("UserSetting")
                         .HasForeignKey("Server.Models.Entities.UserSetting", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Server.Models.Entities.House", b =>
@@ -796,7 +796,7 @@ namespace Server.Migrations
                     b.Navigation("Devices");
                 });
 
-            modelBuilder.Entity("Server.Models.Entities.User", b =>
+            modelBuilder.Entity("Server.Models.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("AccessLogs");
 

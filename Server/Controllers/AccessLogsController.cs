@@ -21,7 +21,7 @@
 //    [HttpGet]
 //    public async Task<ActionResult<IEnumerable<AccessLog>>> GetAccessLogs()
 //    {
-//        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//        var userId = ApplicationUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 //        return NoContent();
 //            //await _context.AccessLogs.Where(log => log.UserId == userId).ToListAsync();
 //    }

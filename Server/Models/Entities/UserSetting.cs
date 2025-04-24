@@ -17,7 +17,7 @@ namespace Server.Models.Entities
 
         // Navigation Property
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 
 }

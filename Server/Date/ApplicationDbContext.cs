@@ -5,7 +5,7 @@ using static DeviceConfiguration;
 
 namespace Server.Date
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -16,15 +16,9 @@ namespace Server.Date
         public DbSet<Device> Devices { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
+        public DbSet<UserImage> UserImages { get; set; }
 
-        //public DbSet<Camera> Cameras { get; set; }
-        //public DbSet<Sensor> Sensors { get; set; }
-        // public DbSet<User> Users { get; set; }
-        //public DbSet<AccessLog> AccessLogs { get; set; }
-        //public DbSet<EventLog> EventLogs { get; set; }
-        //public DbSet<EmergencyContact> EmergencyContacts { get; set; }
-        //public DbSet<UserSetting> UserSettings { get; set; }
-
+         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Apply default Identity configurations
