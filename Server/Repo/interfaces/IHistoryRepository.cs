@@ -10,4 +10,6 @@ namespace Server.Repo.interfaces
         Task<ServiceResponse> AddAsync(CreateHistoryDto entity);
         Task<ServiceResponse> DeleteAsync(Guid id);
     }
+
+
 }

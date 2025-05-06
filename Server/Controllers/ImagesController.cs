@@ -70,12 +70,13 @@ namespace Server.Controllers
             _context.UserImages.Add(userImage);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                message = "Image Uploaded Successfully",
-                imageurl = $"{Request.Scheme}://{Request.Host}/{relativePath}", // for frontend
-                userImage
-            });
+            //return Ok(new
+            //{
+            //    message = "Image Uploaded Successfully",
+            //    imageurl = $"{Request.Scheme}://{Request.Host}/{relativePath}", // for frontend
+            //    userImage
+            //});
+            return Ok();
         }
     }
 }

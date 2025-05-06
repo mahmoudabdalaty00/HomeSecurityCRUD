@@ -7,7 +7,7 @@ namespace Server.Repo.repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public GenericRepository(ApplicationDbContext context)
         {

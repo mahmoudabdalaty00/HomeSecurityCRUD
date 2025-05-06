@@ -12,13 +12,15 @@ namespace Server.Date
         }
 
         public DbSet<History> Histories { get; set; }
+        public DbSet<AIVIsitorData> AIVIsitorDatas { get; set; }
         public DbSet<House> Houses { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Alarm> Alarms { get; set; }
         public DbSet<UserImage> UserImages { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
-         
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Apply default Identity configurations

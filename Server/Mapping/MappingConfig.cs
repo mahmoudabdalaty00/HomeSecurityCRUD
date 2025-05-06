@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Server.Models.DTOs.AIVIsitorDataDTO;
 using Server.Models.DTOs.AlarmDTO;
 using Server.Models.DTOs.DeviceDTo;
 using Server.Models.DTOs.HistoryDTO;
@@ -35,8 +36,18 @@ namespace Server.Mapping
             //Alarm mapping
             CreateMap<Alarm, GetAlarmTriggerDTO>();
             CreateMap<Alarm, AlarmTriggerDTO>().ReverseMap();
- 
             
+            
+            CreateMap<Photo, PhotoDTO>();
+            CreateMap<AIVIsitorData, AiVIsitorDataDTO>()
+                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.PhotoPath));
+             
+            
+            CreateMap<AIVIsitorData, CreateAiVIsitorDataDto>()
+                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.PhotoPath))
+                .ReverseMap();
+
+
         }
     }
  

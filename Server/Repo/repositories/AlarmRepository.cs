@@ -14,7 +14,7 @@ namespace Server.Repo.repositories
         private readonly IGenericRepository<House> _houseRepo;
         private readonly IMapper _mapper;
         private readonly INotificationRepository _notificationRepository;
-        
+
         public AlarmRepository(IGenericRepository<Alarm> repository, IGenericRepository<House> houseRepo, IMapper mapper, INotificationRepository notificationRepository)
         {
             _repository = repository;
@@ -37,12 +37,12 @@ namespace Server.Repo.repositories
 
             await _repository.AddAsync(alarm);
 
-            var user   = await _houseRepo.Query()
-                .Where(h =>h.HouseId == alarmTriggerDTO.HouseId)
+            var user = await _houseRepo.Query()
+                .Where(h => h.HouseId == alarmTriggerDTO.HouseId)
                 .Select(h => h.Devices)
                 .FirstOrDefaultAsync();
 
-            if(user != null)
+            if (user != null)
             {
                 var notification = new CreateNotificationDTO
                 {
@@ -54,7 +54,7 @@ namespace Server.Repo.repositories
                     //alarm == alarm
                 };
 
-               await _notificationRepository.AddAsync(notification);
+                await _notificationRepository.AddAsync(notification);
 
             }
         }
